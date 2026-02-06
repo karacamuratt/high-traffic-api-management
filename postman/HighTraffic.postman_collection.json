@@ -1,0 +1,122 @@
+{
+    "info": {
+        "name": "HighTraffic",
+        "_postman_id": "f8a1f4e0-1111-4aaa-9bbb-222222222222",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Health",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "{{baseUrl}}/health",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "health"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "List Products",
+            "event": [
+                {
+                    "listen": "testscript",
+                    "script": {
+                        "exec": [
+                            "pm.test('200', function () { pm.response.to.have.status(200); });",
+                            "const data = pm.response.json();",
+                            "if (Array.isArray(data) && data.length > 0) {",
+                            "  pm.environment.set('productId', data[0].id);",
+                            "}"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "{{baseUrl}}/products",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "products"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Get Product By ID",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "{{baseUrl}}/products/{{productId}}",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "products",
+                        "{{productId}}"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Create Order",
+            "event": [
+                {
+                    "listen": "testscript",
+                    "script": {
+                        "exec": [
+                            "pm.test('created', function () { pm.expect([200,201]).to.include(pm.response.code); });",
+                            "const o = pm.response.json();",
+                            "if (o && o.id) pm.environment.set('orderId', o.id);"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"qty\": 1\n}"
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/orders",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "orders"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Get Order By ID",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "{{baseUrl}}/orders/{{orderId}}",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "orders",
+                        "{{orderId}}"
+                    ]
+                }
+            }
+        }
+    ]
+}

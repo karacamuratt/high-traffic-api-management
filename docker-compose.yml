@@ -1,0 +1,83 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: htl-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: htl
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks: [htl]
+
+  pgbouncer:
+    image: edoburu/pgbouncer:1.22.1
+    container_name: htl-pgbouncer
+    depends_on: [postgres]
+    ports:
+      - "6432:6432"
+    volumes:
+      - ./pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini:ro
+      - ./pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt:ro
+    networks: [htl]
+
+  redis:
+    image: redis:7-alpine
+    container_name: htl-redis
+    ports:
+      - "6379:6379"
+    networks: [htl]
+
+  api1:
+    build: ./backend
+    container_name: htl-api1
+    depends_on: [pgbouncer, redis]
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://postgres:postgres@localhost:6432/htl?pgbouncer=true
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/htl
+      REDIS_URL: redis://localhost:6379
+    networks: [htl]
+
+  api2:
+    build: ./backend
+    container_name: htl-api2
+    depends_on: [pgbouncer, redis]
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://postgres:postgres@localhost:6432/htl?pgbouncer=true
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/htl
+      REDIS_URL: redis://localhost:6379
+    networks: [htl]
+
+  api3:
+    build: ./backend
+    container_name: htl-api3
+    depends_on: [pgbouncer, redis]
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://postgres:postgres@localhost:6432/htl?pgbouncer=true
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/htl
+      REDIS_URL: redis://localhost:6379
+    networks: [htl]
+
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: htl-nginx
+    depends_on: [api1, api2, api3]
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks: [htl]
+
+networks:
+  htl:
+
+volumes:
+  pgdata:
