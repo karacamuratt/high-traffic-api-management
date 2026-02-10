@@ -1,4 +1,5 @@
 services:
+
   postgres:
     image: postgres:16
     command: >
@@ -10,10 +11,13 @@ services:
       POSTGRES_DB: htl
     ports:
       - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
 
   pgbouncer:
     image: edoburu/pgbouncer
-    depends_on: [postgres]
+    depends_on:
+      - postgres
     ports:
       - "6432:6432"
     volumes:
@@ -28,5 +32,16 @@ services:
     image: nginx:alpine
     ports:
       - "8080:80"
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
     volumes:
-      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf
+      - ./nginx/nginx.local-lb.conf:/etc/nginx/nginx.conf:ro
+
+    depends_on:
+      - redis
+      - pgbouncer
+
+volumes:
+  pg_data:

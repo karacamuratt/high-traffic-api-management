@@ -13,10 +13,14 @@
         "prisma:migrate": "prisma migrate dev",
         "prisma:studio": "prisma studio",
         "prisma:deploy": "prisma migrate deploy",
-        "seed": "ts-node -T src/seed/seed.ts"
+        "seed": "ts-node -T src/seed/seed.ts",
+        "start:api1": "set PORT=3001 && nest start --watch",
+        "start:api2": "set PORT=3002 && nest start --watch",
+        "start:api3": "set PORT=3003 && nest start --watch"
     },
     "dependencies": {
         "@nestjs/common": "^11.0.1",
+        "@nestjs/config": "^4.0.3",
         "@nestjs/core": "^11.0.1",
         "@nestjs/platform-express": "^11.0.1",
         "@prisma/client": "^5.22.0",

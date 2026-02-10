@@ -4,9 +4,16 @@ import { AppModule } from "./app.module";
 import { rateLimiter } from "./common/rate-limit";
 import pinoHttp from "pino-http";
 import pino from "pino";
+import { NestExpressApplication } from "@nestjs/platform-express";
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule, { logger: false });
+    const app = await NestFactory.create<NestExpressApplication>(
+        AppModule,
+        { logger: false }
+    );
+
+    // 🔥 Reverse proxy arkasındayım
+    app.set('trust proxy', 1);
 
     const loggerInstance = {
         level: process.env.NODE_ENV === "production" ? "info" : "debug",
@@ -28,9 +35,9 @@ async function bootstrap() {
 
     app.use(pinoHttp({ logger }));
     app.use(rateLimiter());
-    app.enableShutdownHooks();
 
-    const port = Number(process.env.PORT ?? 3000);
+    const port = Number(process.env.PORT?.trim() || 3000);
+
     await app.listen(port);
 
     logger.info({ port }, "API started");
