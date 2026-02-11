@@ -5,14 +5,18 @@ import { rateLimiter } from "./common/rate-limit";
 import pinoHttp from "pino-http";
 import pino from "pino";
 import { NestExpressApplication } from "@nestjs/platform-express";
+import { bootstrapDatabase } from "./db/bootstrap";
 
 async function bootstrap() {
+    if (process.env.AUTO_MIGRATE === 'true') {
+        await bootstrapDatabase();
+    }
+
     const app = await NestFactory.create<NestExpressApplication>(
         AppModule,
         { logger: false }
     );
 
-    // 🔥 Reverse proxy arkasındayım
     app.set('trust proxy', 1);
 
     const loggerInstance = {

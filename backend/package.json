@@ -16,7 +16,8 @@
         "seed": "ts-node -T src/seed/seed.ts",
         "start:api1": "set PORT=3001 && nest start --watch",
         "start:api2": "set PORT=3002 && nest start --watch",
-        "start:api3": "set PORT=3003 && nest start --watch"
+        "start:api3": "set PORT=3003 && nest start --watch",
+        "bootstrap": "cross-env AUTO_MIGRATE=true npm run start:dev"
     },
     "dependencies": {
         "@nestjs/common": "^11.0.1",
@@ -42,6 +43,7 @@
         "@types/jest": "^30.0.0",
         "@types/node": "^22.10.7",
         "@types/supertest": "^6.0.2",
+        "cross-env": "^10.1.0",
         "eslint": "^9.18.0",
         "eslint-config-prettier": "^10.0.1",
         "eslint-plugin-prettier": "^5.2.2",
