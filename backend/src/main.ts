@@ -38,8 +38,14 @@ async function bootstrap() {
     const logger = pino(loggerInstance);
 
     app.use(pinoHttp({ logger }));
-    app.use(rateLimiter());
-    app.setGlobalPrefix('api');
+
+    /*
+    if (process.env.NODE_ENV !== "test") {
+        app.use(rateLimiter());
+    }
+    */
+
+    app.setGlobalPrefix("api");
 
     const port = Number(process.env.PORT?.trim() || 3000);
 

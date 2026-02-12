@@ -44,12 +44,12 @@ export class ProductsService {
 
         console.log(`Cache miss for key: ${key}`);
 
-        // Cache (10s)
+        // Cache (60s)
         await this.redisService.redis.set(
             key,
             JSON.stringify(result),
             "EX",
-            10
+            60
         );
 
         return result;
