@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { Controller, Get, Param, Query } from "@nestjs/common";
 import { ProductsService } from "./products.service";
 
 @Controller("products")
@@ -6,8 +6,11 @@ export class ProductsController {
     constructor(private products: ProductsService) { }
 
     @Get()
-    list() {
-        return this.products.list();
+    list(
+        @Query("page") page?: string,
+        @Query("limit") limit?: string
+    ) {
+        return this.products.list(Number(page), Number(limit));
     }
 
     @Get(":id")
