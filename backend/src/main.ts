@@ -39,6 +39,7 @@ async function bootstrap() {
 
     app.use(pinoHttp({ logger }));
     app.use(rateLimiter());
+    app.setGlobalPrefix('api');
 
     const port = Number(process.env.PORT?.trim() || 3000);
 

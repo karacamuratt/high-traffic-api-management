@@ -1,13 +1,11 @@
 import { Module } from "@nestjs/common";
-import { PrismaService } from "./prisma/prisma.service";
 import { HealthController } from "./health/health.controller";
 import { ConfigModule } from "@nestjs/config";
 import { RedisModule } from "./redis/redis.module";
 import { ProductsModule } from "./products/products.module";
 import { PrismaModule } from "./prisma/prisma.module";
-//import { OrdersController } from "./orders/orders.controller";
-//import { OrdersService } from "./orders/orders.service";
-
+import { MetricsModule } from "./metrics/metrics.module";
+import { OrdersModule } from "./orders/orders.module";
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -17,9 +15,12 @@ import { PrismaModule } from "./prisma/prisma.module";
         }),
         RedisModule,
         ProductsModule,
+        OrdersModule,
         PrismaModule,
+        MetricsModule,
     ],
     controllers: [HealthController],
     providers: [],
 })
+
 export class AppModule { }
